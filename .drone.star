@@ -392,17 +392,11 @@ def acceptance():
 											owncloudLogFederated() if params['federatedServerNeeded'] else []
 										) +
 										setupGraphapiOIdC() +
-										buildGlauth() +
-										buildKonnectd() +
-										buildOcisPhoenix() +
 										konnectdService(True) +
 										ocisPhoenixService(True) +
 										glauthService()+
 										fixPermissions()
 									) if not params['runningOnOCIS'] else (
-										buildKonnectd() +
-										buildOcisPhoenix() +
-										buildReva() +
 										konnectdService() +
 										revaService() +
 										ocisPhoenixService(False)
@@ -1000,41 +994,14 @@ def buildGlauth():
 def glauthService():
 	return[{
 		'name': 'glauth',
-		'image': 'webhippie/golang:1.13',
+		'image': 'owncloud/ocis-glauth',
 		'pull': 'always',
 		'detach': True,
 		'environment' : {
 			'GLAUTH_BACKEND_DATASTORE': 'owncloud',
 			'GLAUTH_BACKEND_BASEDN': 'dc=example,dc=com',
+			'GLAUTH_BACKEND_SERVERS': 'http://owncloud/',
 		},
-		'commands': [
-			'cd /var/www/owncloud',
-			'./ocis-glauth --log-level debug server --backend-server http://owncloud/'
-		],
-		'volumes': [{
-			'name': 'gopath',
-			'path': '/srv/app',
-		}, {
-			'name': 'configs',
-			'path': '/srv/config'
-		}],
-	}]
-
-def buildKonnectd():
-	return[{
-		'name': 'build-konnectd',
-		'image': 'webhippie/golang:1.13',
-		'pull': 'always',
-		'commands': [
-			'mkdir -p /srv/app/src',
-			'cd $GOPATH/src',
-			'mkdir -p github.com/owncloud/',
-			'cd github.com/owncloud/',
-			'git clone http://github.com/owncloud/ocis-konnectd',
-			'cd ocis-konnectd',
-			'make build',
-			'cp bin/ocis-konnectd /var/www/owncloud'
-		],
 		'volumes': [{
 			'name': 'gopath',
 			'path': '/srv/app',
@@ -1047,7 +1014,7 @@ def buildKonnectd():
 def konnectdService(glauth = False):
 	return[{
 		'name': 'konnectd',
-		'image': 'webhippie/golang:1.13',
+		'image': 'owncloud/ocis-konnectd',
 		'pull': 'always',
 		'detach': True,
 		'environment' : {
@@ -1066,34 +1033,6 @@ def konnectdService(glauth = False):
 			'LDAP_UUID_ATTRIBUTE_TYPE': 'text',
 			'LDAP_FILTER': "(objectClass=posixaccount)"
 		},
-		'commands': [
-			'cd /var/www/owncloud',
-			'./ocis-konnectd  --log-level debug server --signing-kid gen1-2020-02-27',
-		],
-		'volumes': [{
-			'name': 'gopath',
-			'path': '/srv/app',
-		}, {
-			'name': 'configs',
-			'path': '/srv/config'
-		}],
-	}]
-
-def buildOcisPhoenix():
-	return[{
-		'name': 'build-ocis-phoenix',
-		'image': 'webhippie/golang:1.13',
-		'pull': 'always',
-		'commands': [
-			'mkdir -p /srv/app/src',
-			'cd $GOPATH/src',
-			'mkdir -p github.com/owncloud/',
-			'cd github.com/owncloud/',
-			'git clone http://github.com/owncloud/ocis-phoenix.git',
-			'cd ocis-phoenix',
-			'make build',
-			'cp bin/ocis-phoenix /var/www/owncloud'
-		],
 		'volumes': [{
 			'name': 'gopath',
 			'path': '/srv/app',
@@ -1106,7 +1045,7 @@ def buildOcisPhoenix():
 def ocisPhoenixService(glauth = False):
 	return[{
 		'name': 'phoenix',
-		'image': 'webhippie/golang:1.13',
+		'image': 'owncloud/ocis-phoenix',
 		'pull': 'always',
 		'detach': True,
 		'environment' : {
@@ -1114,34 +1053,6 @@ def ocisPhoenixService(glauth = False):
 			'PHOENIX_ASSET_PATH': '/var/www/owncloud/phoenix/dist',
 			'PHOENIX_OIDC_CLIENT_ID': 'phoenix'
 		},
-		'commands': [
-			'cd /var/www/owncloud',
-			'./ocis-phoenix --log-level debug server',
-		],
-		'volumes': [{
-			'name': 'gopath',
-			'path': '/srv/app',
-		}, {
-			'name': 'configs',
-			'path': '/srv/config'
-		}],
-	}]
-
-def buildReva():
-	return[{
-		'name': 'build-reva',
-		'image': 'webhippie/golang:1.13',
-		'pull': 'always',
-		'commands': [
-			'mkdir -p /srv/app/src',
-			'cd $GOPATH/src',
-			'mkdir -p github.com/owncloud/',
-			'cd github.com/owncloud/',
-			'git clone http://github.com/owncloud/ocis-reva',
-			'cd ocis-reva',
-			'make build',
-			'cp bin/ocis-reva /var/www/owncloud'
-		],
 		'volumes': [{
 			'name': 'gopath',
 			'path': '/srv/app',
@@ -1154,7 +1065,7 @@ def buildReva():
 def revaService():
 	return[{
 		'name': 'reva',
-		'image': 'webhippie/golang:1.13',
+		'image': 'owncloud/ocis-reva',
 		'pull': 'always',
 		'detach': True,
 		'environment' : {
@@ -1178,18 +1089,6 @@ def revaService():
 			'mkdir -p $REVA_STORAGE_LOCAL_ROOT',
 			'mkdir -p $REVA_STORAGE_OWNCLOUD_DATADIR',
 			'mkdir -p $REVA_STORAGE_OC_DATA_TEMP_FOLDER',
-			'cd /var/www/owncloud',
-			'./ocis-reva gateway &',
-			'./ocis-reva users &',
-			'./ocis-reva auth-basic &',
-			'./ocis-reva auth-bearer &',
-			'./ocis-reva sharing &',
-			'./ocis-reva storage-root &',
-			'./ocis-reva storage-home &',
-			'./ocis-reva storage-home-data &',
-			'./ocis-reva storage-oc &',
-			'./ocis-reva storage-oc-data &',
-			'./ocis-reva frontend',
 		],
 		'volumes': [{
 			'name': 'gopath',
