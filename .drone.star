@@ -397,6 +397,7 @@ def acceptance():
 										glauthService()+
 										fixPermissions()
 									) if not params['runningOnOCIS'] else (
+										buildReva() +
 										konnectdService() +
 										revaService() +
 										ocisPhoenixService(False)
@@ -1062,6 +1063,30 @@ def ocisPhoenixService(glauth = False):
 		}],
 	}]
 
+def buildReva():
+	return[{
+		'name': 'build-reva',
+		'image': 'webhippie/golang:1.13',
+		'pull': 'always',
+		'commands': [
+			'mkdir -p /srv/app/src',
+			'cd $GOPATH/src',
+			'mkdir -p github.com/owncloud/',
+			'cd github.com/owncloud/',
+			'git clone http://github.com/owncloud/ocis-reva',
+			'cd ocis-reva',
+			'make build',
+			'cp bin/ocis-reva /var/www/owncloud'
+		],
+		'volumes': [{
+			'name': 'gopath',
+			'path': '/srv/app',
+		}, {
+			'name': 'configs',
+			'path': '/srv/config'
+		}],
+	}]
+
 def revaService():
 	return[{
 		'name': 'reva',
@@ -1089,6 +1114,18 @@ def revaService():
 			'mkdir -p $REVA_STORAGE_LOCAL_ROOT',
 			'mkdir -p $REVA_STORAGE_OWNCLOUD_DATADIR',
 			'mkdir -p $REVA_STORAGE_OC_DATA_TEMP_FOLDER',
+			'cd /var/www/owncloud',
+			'./ocis-reva gateway &',
+			'./ocis-reva users &',
+			'./ocis-reva auth-basic &',
+			'./ocis-reva auth-bearer &',
+			'./ocis-reva sharing &',
+			'./ocis-reva storage-root &',
+			'./ocis-reva storage-home &',
+			'./ocis-reva storage-home-data &',
+			'./ocis-reva storage-oc &',
+			'./ocis-reva storage-oc-data &',
+			'./ocis-reva frontend',
 		],
 		'volumes': [{
 			'name': 'gopath',
