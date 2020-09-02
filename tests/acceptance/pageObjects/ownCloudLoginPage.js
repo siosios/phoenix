@@ -44,6 +44,9 @@ module.exports = {
           }
         )
         return errorMessage
+      },
+      waitForPage: function() {
+        return this.waitForElementVisible('@usernameInput')
       }
     }
   ]
