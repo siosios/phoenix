@@ -32,7 +32,7 @@ const LDAP_ADMIN_PASSWORD = process.env.LDAP_ADMIN_PASSWORD || 'admin'
 const OCIS_SKELETON_DIR = process.env.OCIS_SKELETON_DIR || './tests/testing-app/data/webUISkeleton/'
 const OPENID_LOGIN = RUN_ON_OCIS || !!process.env.OPENID_LOGIN
 const PHOENIX_CONFIG = process.env.PHOENIX_CONFIG || path.join(__dirname, 'dist/config.json')
-const SCREENSHOTS = !!process.env.SCREENSHOTS
+const SCREENSHOTS = true
 
 module.exports = {
   page_objects_path: './tests/acceptance/pageObjects',

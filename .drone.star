@@ -49,7 +49,8 @@ config = {
 			'extraEnvironment': {
 				'OPENID_LOGIN': 'true',
 				'PHOENIX_CONFIG': '/srv/config/drone/config.json'
-			}
+			},
+			'screenShots': True,
 		},
 		'webUIFederation': {
 			'suites': {

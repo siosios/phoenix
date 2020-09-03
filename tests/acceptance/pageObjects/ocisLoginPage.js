@@ -45,9 +45,6 @@ module.exports = {
           })
           .useCss()
         return errorMessage
-      },
-      waitForPage: function() {
-        return this.waitForElementVisible('@usernameInput')
       }
     }
   ]
