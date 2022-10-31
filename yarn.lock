@@ -13558,10 +13558,10 @@ __metadata:
   languageName: node
   linkType: hard
 
-"vue-inline-svg@npm:^2.0.0":
-  version: 2.0.0
-  resolution: "vue-inline-svg@npm:2.0.0"
-  checksum: 2456fadaf5a9bcad0b63014e4a8b87a7a155fc2991c509d04c706086c9e12fe55bc13cb7b8facae706e13115890f6784d9965eba8db46337b1986b584934d203
+"vue-inline-svg@npm:^2.1.1":
+  version: 2.1.1
+  resolution: "vue-inline-svg@npm:2.1.1"
+  checksum: c8fa3865c769c9905a22ffa39943262521957fed9d87eb6bcbaf56b3da53d20f5c901d4d824d874359745aa1e6b069c96c3cd1e363d6844682ab7962b3f86127
   languageName: node
   linkType: hard
 
@@ -13793,7 +13793,7 @@ __metadata:
     vue-concurrency: ^2.2.1
     vue-events: ^3.1.0
     vue-gettext: ^2.1.5
-    vue-inline-svg: ^2.0.0
+    vue-inline-svg: ^2.1.1
     vue-meta: ^2.2.2
     vue-resize: ^1.0.1
     vue-router: ^3.5.3
