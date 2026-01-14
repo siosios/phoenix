@@ -115,7 +115,7 @@
     "babel-loader": "^10.0.0",
     "babel-plugin-require-context-hook": "^1.0.0",
     "clean-publish": "^5.0.0",
-    "glob": "^11.0.0",
+    "glob": "^11.1.0",
     "mini-css-extract-plugin": "^2.0.0",
     "node-notifier": "^10.0.0",
     "onchange": "^7.1.0",
