@@ -44,7 +44,7 @@
     "vite-plugin-dts": "^4.2.3"
   },
   "dependencies": {
-    "@casl/ability": "^6.7.1",
+    "@casl/ability": "^6.7.5",
     "@casl/vue": "^2.2.2",
     "@ownclouders/design-system": "workspace:^",
     "@ownclouders/web-client": "workspace:^",
